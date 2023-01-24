@@ -26,7 +26,7 @@
                 "${workspaceRoot}/../../../libs/uriparser/include",
                 "${workspaceRoot}/../../../libs/utf8/include",
                 "${workspaceRoot}/../../../libs/kiss/include",
-                // "${workspaceRoot}",
+                "${workspaceRoot}",
                 "/usr/include",
                 "/usr/local/include",
                 "/usr/include/c++/11",

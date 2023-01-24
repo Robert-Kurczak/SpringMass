@@ -2,7 +2,7 @@
 
 #include "Scene/Scene.hpp"
 
-ClosestNeighbourScene scene({1280, 720, 720});
+ClosestNeighbourScene scene({4000, 2000, 2000});
 
 //--------------------------------------------------------------
 void ofApp::setup(){

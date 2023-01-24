@@ -1,10 +1,13 @@
 #include "Scene.hpp"
+
 #include "../Components/Particle/Particle.hpp"
+#include "../Components/ParticlesGenerator/ParticlesGenerator.hpp"
 
 //---Base---
 Scene::Scene(ofVec3f dimensions): dimensions(dimensions){}
 
 void Scene::load(){}
+
 void Scene::draw(){
 	mainCamera.begin();
 
@@ -18,16 +21,23 @@ void Scene::draw(){
 
 //---Closest Neighbour Scene---
 ClosestNeighbourScene::ClosestNeighbourScene(ofVec3f dimensions): Scene(dimensions){
+	//---Generating initial points---
 	std::vector<Particle> particlesVector;
 
-	for(int i = 0; i < 10; i++){
-		Particle newParticle;
-		newParticle.position = ofVec3f(dimensions.x / 10 * i, dimensions.y / 2, 0);
-		particlesVector.push_back(newParticle);
-	}
+	BoxPositionGenerator boxGenerator(
+		ofVec3f(0, 0, 0),
+		dimensions
+	);
+
+	boxGenerator.generate(particlesVector, 5000);
+	//------
 
 	springSystems = {
 		std::make_shared<ClosestNeighbourSystem>(particlesVector)
 	};
+}
+
+void ClosestNeighbourScene::load(){
+	mainCamera.setTarget(dimensions / 2);
 }
 //------
