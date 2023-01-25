@@ -59,19 +59,19 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 
 	float margin = std::max(maxX - minX, maxY - minY);
 
-	Triangle superTriangle(
-		ofVec2f(minX - margin, minY - margin),
-		ofVec2f(maxX + margin, minY - margin),
-		ofVec2f(maxX / 2.f, maxY + margin)
-	);
+	Particle stParticleA(ofVec2f(minX - margin, minY - margin));
+	Particle stParticleB(ofVec2f(maxX + margin, minY - margin));
+	Particle stParticleC(ofVec2f(maxX / 2.f, maxY + margin));
+
+	Triangle superTriangle(&stParticleA, &stParticleB, &stParticleC);
 	//------
 
 	std::vector<Triangle> triangles = {superTriangle};
 
-	for(auto particle: particlesVector){
+	for(auto& particle: particlesVector){
 		std::vector<Triangle> invalidTriangles;
 
-		for(auto triangle: triangles){
+		for(auto& triangle: triangles){
 			if(triangle.inCircumcircle(particle.position))
 				invalidTriangles.push_back(triangle);
 		}
@@ -79,7 +79,7 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 		//looking for edges not shared between invalidTriangles
 		//---Edges of invalidTriangles---
 		std::vector<Edge> edges;
-		for(auto triangle: invalidTriangles){
+		for(auto& triangle: invalidTriangles){
 			edges.push_back(Edge(triangle.pointA, triangle.pointB));
 			edges.push_back(Edge(triangle.pointB, triangle.pointC));
 			edges.push_back(Edge(triangle.pointC, triangle.pointA));
@@ -112,11 +112,11 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 		//------
 
 		//---Creating new, proper triangles---
-		for(auto edge: uniqueEdges){
+		for(auto& edge: uniqueEdges){
 			Triangle newTriangle(
 				edge.pointA,
 				edge.pointB,
-				particle.position
+				&particle
 			);
 
 			triangles.push_back(newTriangle);
@@ -147,8 +147,34 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 		),
 		triangles.end()
 	);
-
-	float a = 0;
 	//------
+
+	//---Creating springs from triangles---
+	std::vector<Edge> validEdges;
+	for(auto& triangle: triangles){
+		validEdges.push_back(Edge(triangle.pointA, triangle.pointB));
+		validEdges.push_back(Edge(triangle.pointB, triangle.pointC));
+		validEdges.push_back(Edge(triangle.pointC, triangle.pointA));
+	}
+
+	//---Leaving only unique edges---
+	std::vector<Edge> uniqueEdges;
+	for(size_t i = 0; i < validEdges.size(); i++){
+		bool isUnique = true;
+
+		for(size_t j = i; j < validEdges.size(); j++){
+			if(i != j && validEdges[i] == validEdges[j]){
+				isUnique = false;
+				break;
+			}
+		}
+
+		if(isUnique) uniqueEdges.push_back(validEdges[i]);
+	}
+	//------
+
+	for(auto& edge: uniqueEdges){
+		springsVector.emplace_back(1, 1, *edge.pointA, *edge.pointB);
+	}
 }
 //------

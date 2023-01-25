@@ -48,20 +48,13 @@ void ClosestNeighbourScene::load(){
 TriangulationScene::TriangulationScene(ofVec3f dimensions)
 : Scene(dimensions)
 {
-	//---Generating initial points---
-	std::vector<Particle> particlesVector = {
-		Particle({0, 0}),
-		Particle({100, 50}),
-		Particle({50, 100}),
-		Particle({60, 10})
-	};
+	std::vector<Particle> particlesVector;
+	BoxPositionGenerator boxGenerator(
+		ofVec3f(0, 0, 0),
+		ofVec3f(dimensions.x, dimensions.y, 0)
+	);
 
-	// BoxPositionGenerator boxGenerator(
-	// 	ofVec3f(0, 0, 0),
-	// 	dimensions
-	// );
-
-	// boxGenerator.generate(particlesVector, 50);
+	boxGenerator.generate(particlesVector, 300);
 	//------
 
 	springSystems = {

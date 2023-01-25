@@ -28,59 +28,75 @@ class ClosestNeighbourSystem: public SpringSystem{
 class TriangulationSystem: public SpringSystem{
 	private:
 		struct Edge{
-			ofVec2f pointA;
-			ofVec2f pointB;
+			Particle* pointA;
+			Particle* pointB;
 
-			Edge(ofVec2f pointA, ofVec2f pointB)
-			: pointA(pointA), pointB(pointB)
+			Edge(Particle* _pointA, Particle* _pointB)
+			: pointA(_pointA), pointB(_pointB)
 			{}
 
-			bool operator== (const Edge& edge){
-				return	(edge.pointA == pointA && edge.pointB == pointB) ||
-						(edge.pointA == pointB && edge.pointB == pointA);
+			bool operator==(const Edge& edge){
+				return(
+					(
+						edge.pointA -> position == pointA -> position && 
+						edge.pointB -> position == pointB -> position
+					)||
+					(
+						edge.pointA -> position == pointB -> position &&
+						edge.pointB -> position == pointA -> position
+					)
+				);
 			}
 		};
 
 		struct Triangle{
-			ofVec2f pointA;
-			ofVec2f pointB;
-			ofVec2f pointC;
+			Particle* pointA;
+			Particle* pointB;
+			Particle* pointC;
 
-			float denominator;
+			ofVec2f circumcenter;
 
-			Triangle(ofVec2f pointA, ofVec2f pointB, ofVec2f pointC)
-			: pointA(pointA), pointB(pointB), pointC(pointC)
-			{
-				denominator = (
-					pointA.x * (pointB.y - pointC.y) + 
-					pointA.y * (pointC.x - pointB.x) + 
-					pointB.x * pointC.y - 
-					pointB.y * pointC.x
+			Triangle(Particle* _pointA, Particle* _pointB, Particle* _pointC)
+			: pointA(_pointA), pointB(_pointB), pointC(_pointC)
+			{}
+
+			bool operator==(const Triangle& triangle){
+				return(
+					triangle.pointA -> position == pointA -> position &&
+					triangle.pointB -> position == pointB -> position &&
+					triangle.pointC -> position == pointC -> position
 				);
 			}
 
-			bool operator== (const Triangle& triangle){
-				return triangle.pointA == pointA && triangle.pointB == pointB && triangle.pointC == pointC;
-			}
-
 			bool inCircumcircle(ofVec2f point){
-				float t1 = (
-					point.x * (pointC.y -  pointA.y) + 
-					point.y * (pointA.x - pointC.x) - 
-					pointA.x * pointC.y +
-					pointA.y * pointC.x
-				) / denominator;
+				float Ax = pointA -> position.x;
+				float Ay = pointA -> position.y;
 
-				float t2 = (
-					point.x * (pointB.y -  pointA.y) +
-					point.y * (pointA.x - pointB.x) -
-					pointA.x * pointB.y +
-					pointA.y * pointB.x
-				) / -denominator;
-				
-				float s = t1 + t2;
-				
-				return 0 <= t1 && t1 <= 1 && 0 <= t2 && t2 <= 1 && s <= 1;
+				float Bx = pointB -> position.x;
+				float By = pointB -> position.y;
+
+				float Cx = pointC -> position.x;
+				float Cy = pointC -> position.y;
+
+				float D = 2 * (Ax*(By-Cy) + Bx*(Cy-Ay) + Cx*(Ay-By));
+
+				float Ux = (
+					(((Ax*Ax) + (Ay*Ay)) * (By - Cy)) + 
+					(((Bx*Bx) + (By*By)) * (Cy - Ay)) +
+					(((Cx*Cx) + (Cy*Cy)) * (Ay - By))
+				) / D;
+
+				float Uy = (
+					(((Ax*Ax) + (Ay*Ay)) * (Cx - Bx)) + 
+					(((Bx*Bx) + (By*By)) * (Ax - Cx)) +
+					(((Cx*Cx) + (Cy*Cy)) * (Bx - Ax))
+				) / D;
+
+				ofVec2f circumcenter(Ux, Uy);
+
+				float radius = circumcenter.distance(pointA->position);
+
+				return circumcenter.distance(point) < radius;
 			}
 		};
 
