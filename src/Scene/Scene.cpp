@@ -20,7 +20,9 @@ void Scene::draw(){
 //------
 
 //---Closest Neighbour Scene---
-ClosestNeighbourScene::ClosestNeighbourScene(ofVec3f dimensions): Scene(dimensions){
+ClosestNeighbourScene::ClosestNeighbourScene(ofVec3f dimensions)
+: Scene(dimensions)
+{
 	//---Generating initial points---
 	std::vector<Particle> particlesVector;
 
@@ -39,5 +41,31 @@ ClosestNeighbourScene::ClosestNeighbourScene(ofVec3f dimensions): Scene(dimensio
 
 void ClosestNeighbourScene::load(){
 	mainCamera.setTarget(dimensions / 2);
+}
+//------
+
+//---Triangulation Scene---
+TriangulationScene::TriangulationScene(ofVec3f dimensions)
+: Scene(dimensions)
+{
+	//---Generating initial points---
+	std::vector<Particle> particlesVector = {
+		Particle({0, 0}),
+		Particle({100, 50}),
+		Particle({50, 100}),
+		Particle({60, 10})
+	};
+
+	// BoxPositionGenerator boxGenerator(
+	// 	ofVec3f(0, 0, 0),
+	// 	dimensions
+	// );
+
+	// boxGenerator.generate(particlesVector, 50);
+	//------
+
+	springSystems = {
+		std::make_shared<TriangulationSystem>(particlesVector)
+	};
 }
 //------

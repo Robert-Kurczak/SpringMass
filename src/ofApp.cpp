@@ -2,7 +2,7 @@
 
 #include "Scene/Scene.hpp"
 
-ClosestNeighbourScene scene({4000, 2000, 2000});
+TriangulationScene scene({1280, 720, 0});
 
 //--------------------------------------------------------------
 void ofApp::setup(){

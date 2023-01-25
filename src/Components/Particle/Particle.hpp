@@ -13,6 +13,9 @@ class Particle{
 		ofVec3f velocity;
 
 		Particle();
+		Particle(ofVec3f position)
+		: position(position)
+		{}
 
 		void draw();
 };

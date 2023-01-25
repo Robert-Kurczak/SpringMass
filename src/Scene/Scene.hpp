@@ -30,3 +30,12 @@ class ClosestNeighbourScene: public Scene{
 		void load();
 };
 //------
+
+//---Triangulation Scene---
+class TriangulationScene: public Scene{
+	public:
+		TriangulationScene(ofVec3f dimensions);
+
+		// void load();
+};
+//------
