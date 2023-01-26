@@ -39,6 +39,31 @@ ClosestNeighbourSystem::ClosestNeighbourSystem(std::vector<Particle> _particlesV
 //------
 
 //------------------------Triangulaton System------------------------
+//---nested Edge class---
+TriangulationSystem::Edge::Edge(
+	Particle* _pointA,
+	Particle* _pointB
+):
+	pointA(_pointA),
+	pointB(_pointB)
+{}
+
+//for filtering out edges object that describes same edge
+bool TriangulationSystem::Edge::operator==(const Edge& edge){
+	return(
+		(
+			edge.pointA -> position == pointA -> position && 
+			edge.pointB -> position == pointB -> position
+		)
+		||
+		(
+			edge.pointA -> position == pointB -> position &&
+			edge.pointB -> position == pointA -> position
+		)
+	);
+}
+//---
+
 //---nested Triangle class---
 TriangulationSystem::Triangle::Triangle(
 	Particle* _pointA,

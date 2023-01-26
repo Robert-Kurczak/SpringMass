@@ -26,47 +26,39 @@ class ClosestNeighbourSystem: public SpringSystem{
 
 //---Triangulation System---
 class TriangulationSystem: public SpringSystem{
+private:
+	//Those classes holds pointers to particles as their vertices.
+	//It needs to be particles, because at the end of the algorithm
+	//we need to create springs between particles, not points.
+	
+	class Edge{
+	public:
+		Particle* pointA;
+		Particle* pointB;
+
+		Edge(Particle* _pointA, Particle* _pointB);
+
+		bool operator==(const Edge& edge);
+	};
+
+	class Triangle{
 	private:
-		struct Edge{
-			Particle* pointA;
-			Particle* pointB;
-
-			Edge(Particle* _pointA, Particle* _pointB)
-			: pointA(_pointA), pointB(_pointB)
-			{}
-
-			bool operator==(const Edge& edge){
-				return(
-					(
-						edge.pointA -> position == pointA -> position && 
-						edge.pointB -> position == pointB -> position
-					)||
-					(
-						edge.pointA -> position == pointB -> position &&
-						edge.pointB -> position == pointA -> position
-					)
-				);
-			}
-		};
-
-		class Triangle{
-			private:
-				ofVec2f circumcenter;
-				float circumradiusSqr;
-
-			public:
-				Particle* pointA;
-				Particle* pointB;
-				Particle* pointC;
-
-				Triangle(Particle* _pointA, Particle* _pointB, Particle* _pointC);
-
-				bool operator==(const Triangle& triangle);
-
-				bool inCircumcircle(ofVec2f point);
-		};
+		ofVec2f circumcenter;
+		float circumradiusSqr;
 
 	public:
-		TriangulationSystem(std::vector<Particle> particlesVector);
+		Particle* pointA;
+		Particle* pointB;
+		Particle* pointC;
+
+		Triangle(Particle* _pointA, Particle* _pointB, Particle* _pointC);
+
+		bool operator==(const Triangle& triangle);
+
+		bool inCircumcircle(ofVec2f point);
+	};
+
+public:
+	TriangulationSystem(std::vector<Particle> particlesVector);
 };
 //------()
