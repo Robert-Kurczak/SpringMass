@@ -38,7 +38,60 @@ ClosestNeighbourSystem::ClosestNeighbourSystem(std::vector<Particle> _particlesV
 };
 //------
 
-//---Triangulation System---
+//------------------------Triangulaton System------------------------
+//---nested Triangle class---
+TriangulationSystem::Triangle::Triangle(
+	Particle* _pointA,
+	Particle* _pointB,
+	Particle* _pointC
+):
+	pointA(_pointA),
+	pointB(_pointB),
+	pointC(_pointC)
+{
+	//Costly calculations of circumcircle of given 3 points
+	//theres probably a better way to do it
+
+	float Ax = pointA -> position.x;
+	float Ay = pointA -> position.y;
+
+	float Bx = pointB -> position.x;
+	float By = pointB -> position.y;
+
+	float Cx = pointC -> position.x;
+	float Cy = pointC -> position.y;
+
+	float D = 2 * (Ax*(By-Cy) + Bx*(Cy-Ay) + Cx*(Ay-By));
+
+	circumcenter.x = (
+		(((Ax*Ax) + (Ay*Ay)) * (By - Cy)) + 
+		(((Bx*Bx) + (By*By)) * (Cy - Ay)) +
+		(((Cx*Cx) + (Cy*Cy)) * (Ay - By))
+	) / D;
+
+	circumcenter.y = (
+		(((Ax*Ax) + (Ay*Ay)) * (Cx - Bx)) + 
+		(((Bx*Bx) + (By*By)) * (Ax - Cx)) +
+		(((Cx*Cx) + (Cy*Cy)) * (Bx - Ax))
+	) / D;
+
+	circumradiusSqr = circumcenter.squareDistance(pointA -> position);
+}
+
+//for filtering out copies of the same triangles in vectors
+bool TriangulationSystem::Triangle::operator==(const Triangle& triangle){
+	return(
+		triangle.pointA -> position == pointA -> position &&
+		triangle.pointB -> position == pointB -> position &&
+		triangle.pointC -> position == pointC -> position
+	);
+}
+
+bool TriangulationSystem::Triangle::inCircumcircle(ofVec2f point){
+	return circumcenter.squareDistance(point) < circumradiusSqr;
+}
+//------
+
 TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 : SpringSystem(_particlesVector)
 {
@@ -178,3 +231,4 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 	}
 }
 //------
+//------------------------------------------------

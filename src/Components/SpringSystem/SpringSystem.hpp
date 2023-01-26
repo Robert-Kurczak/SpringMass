@@ -49,55 +49,21 @@ class TriangulationSystem: public SpringSystem{
 			}
 		};
 
-		struct Triangle{
-			Particle* pointA;
-			Particle* pointB;
-			Particle* pointC;
+		class Triangle{
+			private:
+				ofVec2f circumcenter;
+				float circumradiusSqr;
 
-			ofVec2f circumcenter;
+			public:
+				Particle* pointA;
+				Particle* pointB;
+				Particle* pointC;
 
-			Triangle(Particle* _pointA, Particle* _pointB, Particle* _pointC)
-			: pointA(_pointA), pointB(_pointB), pointC(_pointC)
-			{}
+				Triangle(Particle* _pointA, Particle* _pointB, Particle* _pointC);
 
-			bool operator==(const Triangle& triangle){
-				return(
-					triangle.pointA -> position == pointA -> position &&
-					triangle.pointB -> position == pointB -> position &&
-					triangle.pointC -> position == pointC -> position
-				);
-			}
+				bool operator==(const Triangle& triangle);
 
-			bool inCircumcircle(ofVec2f point){
-				float Ax = pointA -> position.x;
-				float Ay = pointA -> position.y;
-
-				float Bx = pointB -> position.x;
-				float By = pointB -> position.y;
-
-				float Cx = pointC -> position.x;
-				float Cy = pointC -> position.y;
-
-				float D = 2 * (Ax*(By-Cy) + Bx*(Cy-Ay) + Cx*(Ay-By));
-
-				float Ux = (
-					(((Ax*Ax) + (Ay*Ay)) * (By - Cy)) + 
-					(((Bx*Bx) + (By*By)) * (Cy - Ay)) +
-					(((Cx*Cx) + (Cy*Cy)) * (Ay - By))
-				) / D;
-
-				float Uy = (
-					(((Ax*Ax) + (Ay*Ay)) * (Cx - Bx)) + 
-					(((Bx*Bx) + (By*By)) * (Ax - Cx)) +
-					(((Cx*Cx) + (Cy*Cy)) * (Bx - Ax))
-				) / D;
-
-				ofVec2f circumcenter(Ux, Uy);
-
-				float radius = circumcenter.distance(pointA->position);
-
-				return circumcenter.distance(point) < radius;
-			}
+				bool inCircumcircle(ofVec2f point);
 		};
 
 	public:
