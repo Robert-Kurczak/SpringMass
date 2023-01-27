@@ -1,11 +1,11 @@
 #include "ParticleUpdater.hpp"
 
 //---Gravity Updater---
-ParticleGravityUpdater::ParticleGravityUpdater(float acceleration)
+ParticleGravity::ParticleGravity(float acceleration)
 : acceleration(acceleration)
 {}
 
-void ParticleGravityUpdater::update(float deltaTime, Particle& particle){
+void ParticleGravity::update(float deltaTime, Particle& particle){
 
 	//Initial position, Euler interpolation
 	if(particle.position == particle.lastPosition){
@@ -24,3 +24,16 @@ void ParticleGravityUpdater::update(float deltaTime, Particle& particle){
 	}
 }
 //---
+
+//---Floor Collision Updater---
+ParticleFloorCollision::ParticleFloorCollision(float floorPosition)
+: floorPosition(floorPosition)
+{}
+
+void ParticleFloorCollision::update(float deltaTime, Particle& particle){
+	if(particle.position.y >= floorPosition){
+		particle.position.y = floorPosition;
+		particle.lastPosition = particle.position;
+	}
+}
+//------

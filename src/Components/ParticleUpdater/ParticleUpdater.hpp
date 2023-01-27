@@ -7,12 +7,22 @@ class ParticleUpdater{
 };
 //------
 
-class ParticleGravityUpdater: public ParticleUpdater{
+class ParticleGravity: public ParticleUpdater{
 	private:
 		float acceleration;
 
 	public:
-		ParticleGravityUpdater(float acceleration = 9.81);
+		ParticleGravity(float acceleration = 9.81);
+
+		void update(float deltaTime, Particle& particle);
+};
+
+class ParticleFloorCollision: public ParticleUpdater{
+	private:
+		float floorPosition;
+
+	public:
+		ParticleFloorCollision(float floorPosition);
 
 		void update(float deltaTime, Particle& particle);
 };

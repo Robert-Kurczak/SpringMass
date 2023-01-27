@@ -57,7 +57,8 @@ ClosestNeighbourSystem::ClosestNeighbourSystem(std::vector<Particle> _particlesV
 //------------------------Triangulaton System------------------------
 void TriangulationSystem::setUpdaters(){
 	particleUpdatersVector = {
-		std::make_shared<ParticleGravityUpdater>(9.81)
+		std::make_shared<ParticleGravity>(9.81),
+		std::make_shared<ParticleFloorCollision>(500)
 	};
 }
 
