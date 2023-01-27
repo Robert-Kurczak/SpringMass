@@ -6,9 +6,25 @@ SpringSystem::SpringSystem(std::vector<Particle> particlesVector):
 particlesVector(particlesVector)
 {}
 
-void SpringSystem::draw(){
+void SpringSystem::updateAndDraw(){
+	float deltaTime = ofGetLastFrameTime();
+
+	//Updating particles
+	for(auto& particle: particlesVector){
+		for(auto& particleUpdater: particleUpdatersVector){
+			particleUpdater->update(deltaTime, particle);
+		}
+	}
+
+	//Updating springs
+	for(auto& spring: springsVector){
+		for(auto& springUpdater: springUpdatersVector){
+			springUpdater->update(deltaTime, spring);
+		}
+	}
+
 	for(Spring spring: springsVector) spring.draw();
-	for(Particle particle: particlesVector) particle.draw();
+	for(auto& particle: particlesVector) particle.draw();
 }
 //------
 
@@ -39,6 +55,12 @@ ClosestNeighbourSystem::ClosestNeighbourSystem(std::vector<Particle> _particlesV
 //------
 
 //------------------------Triangulaton System------------------------
+void TriangulationSystem::setUpdaters(){
+	particleUpdatersVector = {
+		std::make_shared<ParticleGravityUpdater>(9.81)
+	};
+}
+
 //---nested Edge class---
 TriangulationSystem::Edge::Edge(
 	Particle* _pointA,
@@ -254,6 +276,8 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 	for(auto& edge: uniqueEdges){
 		springsVector.emplace_back(1, 1, *edge.pointA, *edge.pointB);
 	}
+
+	setUpdaters();
 }
 //------
 //------------------------------------------------

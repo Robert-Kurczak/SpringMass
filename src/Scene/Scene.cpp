@@ -12,7 +12,7 @@ void Scene::draw(){
 	mainCamera.begin();
 
 	for(std::shared_ptr<SpringSystem> system: springSystems){
-		system -> draw();
+		system -> updateAndDraw();
 	}
 
 	mainCamera.end();
@@ -60,5 +60,11 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 	springSystems = {
 		std::make_shared<TriangulationSystem>(particlesVector)
 	};
+}
+
+void TriangulationScene::load(){
+	mainCamera.setTarget(dimensions / 2);
+	mainCamera.panDeg(90);
+	mainCamera.rollDeg(135);
 }
 //------

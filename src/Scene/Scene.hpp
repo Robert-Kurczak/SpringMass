@@ -24,18 +24,18 @@ class Scene{
 
 //---Closest Neighbour Scene---
 class ClosestNeighbourScene: public Scene{
-	public:
-		ClosestNeighbourScene(ofVec3f dimensions);
+public:
+	ClosestNeighbourScene(ofVec3f dimensions);
 
-		void load();
+	void load();
 };
 //------
 
 //---Triangulation Scene---
 class TriangulationScene: public Scene{
-	public:
-		TriangulationScene(ofVec3f dimensions);
+public:
+	TriangulationScene(ofVec3f dimensions);
 
-		// void load();
+	void load();
 };
 //------

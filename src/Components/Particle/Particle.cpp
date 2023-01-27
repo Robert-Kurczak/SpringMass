@@ -1,6 +1,8 @@
 #include "Particle.hpp"
 
-Particle::Particle(){}
+Particle::Particle(ofVec3f position)
+: lastPosition(position), position(position)
+{}
 
 void Particle::draw(){
 	ofSetColor(color);

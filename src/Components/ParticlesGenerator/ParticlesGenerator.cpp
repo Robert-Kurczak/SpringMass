@@ -19,12 +19,12 @@ positionStart(positionStart), positionEnd(positionEnd)
 
 void BoxPositionGenerator::generate(std::vector<Particle>& particlesVector, int amount){
 	for(int i = 0; i < amount; i++){
-		Particle newParticle;
-
-		newParticle.position = ofVec3f(
-			randomFloat(positionStart.x, positionEnd.x),
-			randomFloat(positionStart.y, positionEnd.y),
-			randomFloat(positionStart.z, positionEnd.z)
+		Particle newParticle(
+			ofVec3f(
+				randomFloat(positionStart.x, positionEnd.x),
+				randomFloat(positionStart.y, positionEnd.y),
+				randomFloat(positionStart.z, positionEnd.z)
+			)
 		);
 
 		particlesVector.push_back(newParticle);

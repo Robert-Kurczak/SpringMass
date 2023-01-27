@@ -9,12 +9,12 @@ class Spring{
 		float restLength;
 		float currentLength;
 
-		Particle& startPoint;
-		Particle& endPoint;
-
 		ofColor color;
 
 	public:
+		Particle& startPoint;
+		Particle& endPoint;
+		
 		Spring(
 			float constant,
 			float restLength,

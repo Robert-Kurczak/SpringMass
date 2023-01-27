@@ -1,19 +1,25 @@
 #pragma once
 
 #include <vector>
+
 #include "../Particle/Particle.hpp"
 #include "../Spring/Spring.hpp"
+#include "../ParticleUpdater/ParticleUpdater.hpp"
+#include "../SpringUpdater/SpringUpdater.hpp"
 
 //---Base---
 class SpringSystem{
 	protected:
 		std::vector<Particle> particlesVector;
 		std::vector<Spring> springsVector;
+
+		std::vector<std::shared_ptr<ParticleUpdater>> particleUpdatersVector;
+		std::vector<std::shared_ptr<SpringUpdater>> springUpdatersVector;
 	
 	public:
 		SpringSystem(std::vector<Particle> particlesVector);
 
-		void draw();
+		void updateAndDraw();
 };
 //------
 
@@ -58,7 +64,9 @@ private:
 		bool inCircumcircle(ofVec2f point);
 	};
 
+	void setUpdaters();
+
 public:
 	TriangulationSystem(std::vector<Particle> particlesVector);
 };
-//------()
+//------

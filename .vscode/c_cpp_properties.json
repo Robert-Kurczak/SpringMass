@@ -27,6 +27,7 @@
                 "${workspaceRoot}/../../../libs/utf8/include",
                 "${workspaceRoot}/../../../libs/kiss/include",
                 "${workspaceRoot}",
+                "/home/robert/myLibs/of_v0.11.2_linux64gcc6_release/libs/openFrameworks",
                 "/usr/include",
                 "/usr/local/include",
                 "/usr/include/c++/11",
@@ -41,13 +42,13 @@
                 "/usr/include/pulse",
                 "/usr/include/cairo",
                 "/usr/include/gstreamer-1.0",
-                "/usr/include/glib-2.0",
-                "/home/robert/myLibs/of_v0.11.2_linux64gcc6_release/libs/openFrameworks"
+                "/usr/include/glib-2.0"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++11"
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "linux-clang-x64"
         }
     ],
     "version": 4
