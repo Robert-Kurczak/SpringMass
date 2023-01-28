@@ -6,7 +6,6 @@ ParticleGravity::ParticleGravity(float acceleration)
 {}
 
 void ParticleGravity::update(float deltaTime, Particle& particle){
-
 	//Initial position, Euler interpolation
 	if(particle.position == particle.lastPosition){
 		particle.velocity.y += acceleration * deltaTime;

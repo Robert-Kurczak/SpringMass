@@ -4,16 +4,14 @@
 #include "ofMain.h"
 
 class Spring{
-	private:
+	public:
 		float constant;
 		float restLength;
-		float currentLength;
 
-		ofColor color;
-
-	public:
 		Particle& startPoint;
 		Particle& endPoint;
+
+		ofColor color;
 		
 		Spring(
 			float constant,
@@ -23,4 +21,6 @@ class Spring{
 		);
 
 		void draw();
+
+		float getCurrentLength();
 };

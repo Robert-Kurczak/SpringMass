@@ -64,7 +64,9 @@ private:
 		bool inCircumcircle(ofVec2f point);
 	};
 
-	void setUpdaters();
+	void triangulate();
+	void setParticleUpdaters();
+	void setSpringUpdaters();
 
 public:
 	TriangulationSystem(std::vector<Particle> particlesVector);

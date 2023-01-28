@@ -6,3 +6,8 @@ class SpringUpdater{
 		virtual void update(float deltaTime, Spring& spring) = 0;
 };
 //------
+
+class SpringForce: public SpringUpdater{
+	public:
+		void update(float deltaTime, Spring& spring);
+};

@@ -55,13 +55,6 @@ ClosestNeighbourSystem::ClosestNeighbourSystem(std::vector<Particle> _particlesV
 //------
 
 //------------------------Triangulaton System------------------------
-void TriangulationSystem::setUpdaters(){
-	particleUpdatersVector = {
-		std::make_shared<ParticleGravity>(9.81),
-		std::make_shared<ParticleFloorCollision>(500)
-	};
-}
-
 //---nested Edge class---
 TriangulationSystem::Edge::Edge(
 	Particle* _pointA,
@@ -140,9 +133,7 @@ bool TriangulationSystem::Triangle::inCircumcircle(ofVec2f point){
 }
 //------
 
-TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
-: SpringSystem(_particlesVector)
-{
+void TriangulationSystem::triangulate(){
 	//---Creating super triangle---
 	float minX = FLT_MAX;
 	float maxX = FLT_MIN;
@@ -275,10 +266,31 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 	//------
 
 	for(auto& edge: uniqueEdges){
-		springsVector.emplace_back(1, 1, *edge.pointA, *edge.pointB);
+		float length = edge.pointA->position.distance(edge.pointB->position);
+		springsVector.emplace_back(10, length, *edge.pointA, *edge.pointB);
 	}
+}
 
-	setUpdaters();
+void TriangulationSystem::setParticleUpdaters(){
+	particleUpdatersVector = {
+		std::make_shared<ParticleGravity>(9.81),
+		std::make_shared<ParticleFloorCollision>(500)
+	};
+}
+
+void TriangulationSystem::setSpringUpdaters(){
+	springUpdatersVector = {
+		std::make_shared<SpringForce>()
+	};
+}
+
+TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
+: SpringSystem(_particlesVector)
+{
+	triangulate();
+
+	setParticleUpdaters();
+	setSpringUpdaters();
 }
 //------
 //------------------------------------------------
