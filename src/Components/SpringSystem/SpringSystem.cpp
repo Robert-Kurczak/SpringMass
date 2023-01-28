@@ -6,23 +6,69 @@ SpringSystem::SpringSystem(std::vector<Particle> particlesVector):
 particlesVector(particlesVector)
 {}
 
-void SpringSystem::updateAndDraw(){
+void SpringSystem::updateParticle(Particle& particle, ofVec3f force){
 	float deltaTime = ofGetLastFrameTime();
 
-	//Updating particles
-	for(auto& particle: particlesVector){
-		for(auto& particleUpdater: particleUpdatersVector){
-			particleUpdater->update(deltaTime, particle);
-		}
+	//Initial position, Euler method
+	if(particle.position == particle.lastPosition){
+		particle.position += force / particle.mass * deltaTime * deltaTime;
+	}
+	//Verlet method
+	else{
+		ofVec3f newPosition = (
+			2 * particle.position - particle.lastPosition +
+			deltaTime * deltaTime * force / particle.mass
+		);
+
+		particle.lastPosition = particle.position;
+		particle.position = newPosition;
 	}
 
-	//Updating springs
+	particle.force = force;
+}
+
+void SpringSystem::updateAndDraw(){
+	//Updating
 	for(auto& spring: springsVector){
-		for(auto& springUpdater: springUpdatersVector){
-			springUpdater->update(deltaTime, spring);
+		std::pair<ofVec3f, ofVec3f> springForce = spring.getForce();
+
+		if(!spring.startPoint.updated){
+			// ofVec3f resultForce = springForce.first;
+			ofVec3f resultForce;
+
+			for(auto& generator: forceGeneratorsVector){
+				resultForce += generator->getForce(spring.startPoint);
+			}
+
+			updateParticle(spring.startPoint, resultForce);
+			spring.startPoint.updated = true;
+
+		}
+
+		if(!spring.endPoint.updated){
+			// ofVec3f resultForce = springForce.second;
+			ofVec3f resultForce;
+
+			for(auto& generator: forceGeneratorsVector){
+				resultForce += generator->getForce(spring.endPoint);
+			}
+
+			updateParticle(spring.endPoint, resultForce);
+			spring.endPoint.updated = true;
+
 		}
 	}
 
+	//Preparing particles for next iteration of updates
+	for(auto& particle: particlesVector){
+		particle.updated = false;
+	}
+
+	std::cout << particlesVector[0].position.y << std::endl;
+
+	//Drawing
+
+	//TODO move particle draw to spring
 	for(Spring spring: springsVector) spring.draw();
 	for(auto& particle: particlesVector) particle.draw();
 }
@@ -267,20 +313,13 @@ void TriangulationSystem::triangulate(){
 
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
-		springsVector.emplace_back(10, length, *edge.pointA, *edge.pointB);
+		springsVector.emplace_back(0.05, length, *edge.pointA, *edge.pointB);
 	}
 }
 
-void TriangulationSystem::setParticleUpdaters(){
-	particleUpdatersVector = {
-		std::make_shared<ParticleGravity>(9.81),
-		std::make_shared<ParticleFloorCollision>(500)
-	};
-}
-
-void TriangulationSystem::setSpringUpdaters(){
-	springUpdatersVector = {
-		std::make_shared<SpringForce>()
+void TriangulationSystem::setForceGenerators(){
+	forceGeneratorsVector = {
+		std::make_shared<GravityForce>()
 	};
 }
 
@@ -289,8 +328,7 @@ TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 {
 	triangulate();
 
-	setParticleUpdaters();
-	setSpringUpdaters();
+	setForceGenerators();
 }
 //------
 //------------------------------------------------

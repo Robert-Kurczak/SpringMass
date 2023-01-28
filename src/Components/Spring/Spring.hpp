@@ -2,6 +2,7 @@
 
 #include "../Particle/Particle.hpp"
 #include "ofMain.h"
+#include "utility"
 
 class Spring{
 	public:
@@ -23,4 +24,6 @@ class Spring{
 		void draw();
 
 		float getCurrentLength();
+
+		std::pair<ofVec3f, ofVec3f> getForce();
 };
