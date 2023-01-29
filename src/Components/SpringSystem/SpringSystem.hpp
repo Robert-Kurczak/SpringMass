@@ -16,7 +16,12 @@ class SpringSystem{
 		std::vector<std::shared_ptr<ForceGenerator>> forceGeneratorsVector;
 		std::vector<std::shared_ptr<SpringUpdater>> updatersVector;
 
-		void updateParticle(float deltaTime, Particle& particle, ofVec3f springForce);
+		void updateParticle(
+			float deltaTime,
+			Particle& particle,
+			ofVec3f force
+		);
+
 
 	public:
 		SpringSystem(std::vector<Particle> particlesVector);

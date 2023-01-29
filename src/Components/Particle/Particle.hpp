@@ -12,7 +12,7 @@ class Particle{
 		
 		ofVec3f lastPosition;
 		ofVec3f position;
-		ofVec3f force;
+		ofVec3f newPosition;
 
 		Particle(ofVec3f position);
 

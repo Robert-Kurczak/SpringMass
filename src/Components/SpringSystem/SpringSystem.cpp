@@ -9,7 +9,7 @@ particlesVector(particlesVector)
 void SpringSystem::updateParticle(float deltaTime, Particle& particle, ofVec3f force){
 	//Initial position, Euler method
 	if(particle.position == particle.lastPosition){
-		particle.position += force / particle.mass * deltaTime * deltaTime;
+		particle.newPosition = particle.position + force / particle.mass * deltaTime * deltaTime;
 	}
 	//Verlet method
 	else{
@@ -18,11 +18,8 @@ void SpringSystem::updateParticle(float deltaTime, Particle& particle, ofVec3f f
 			deltaTime * deltaTime * force / particle.mass
 		);
 
-		particle.lastPosition = particle.position;
-		particle.position = newPosition;
+		particle.newPosition = newPosition;
 	}
-
-	particle.force = force;
 }
 
 void SpringSystem::updateAndDraw(){
@@ -30,6 +27,8 @@ void SpringSystem::updateAndDraw(){
 	//Updating
 	for(auto& spring: springsVector){
 		std::pair<ofVec3f, ofVec3f> springForce = spring.getForce();
+
+		std::pair<ofVec3f, ofVec3f> delta;
 
 		if(!spring.startPoint.updated){
 			ofVec3f resultForce = springForce.first;
@@ -62,13 +61,16 @@ void SpringSystem::updateAndDraw(){
 
 	//Preparing particles for next iteration of updates
 	for(auto& particle: particlesVector){
+		particle.lastPosition = particle.position;
+		particle.position = particle.newPosition;
+
 		particle.updated = false;
 	}
 
 	//Drawing
 
 	//TODO move particle draw to spring
-	for(Spring spring: springsVector) spring.draw();
+	for(auto& spring: springsVector) spring.draw();
 	for(auto& particle: particlesVector) particle.draw();
 }
 //------
@@ -312,18 +314,19 @@ void TriangulationSystem::triangulate(){
 
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
-		springsVector.emplace_back(500, length, *edge.pointA, *edge.pointB);
+		springsVector.emplace_back(2, length, *edge.pointA, *edge.pointB);
 	}
 }
 
 void TriangulationSystem::setForceGenerators(){
 	forceGeneratorsVector = {
-		std::make_shared<GravityForce>()
+		std::make_shared<GravityForce>(ofVec3f(0, 1, 0))
 	};
 }
+
 void TriangulationSystem::setUpdaters(){
 	updatersVector = {
-		std::make_shared<GroundCollision>(1200)
+		std::make_shared<GroundCollision>(1000)
 	};
 }
 

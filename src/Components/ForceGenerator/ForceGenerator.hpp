@@ -19,13 +19,3 @@ class GravityForce: public ForceGenerator{
 
 		ofVec3f getForce(const Particle& particle) override;
 };
-
-class FloorCollisionForce: public ForceGenerator{
-	private:
-		float floorLevel;
-
-	public:
-		FloorCollisionForce(float floorLevel);
-
-		ofVec3f getForce(const Particle& particle) override;
-};

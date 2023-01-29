@@ -9,11 +9,13 @@ void GroundCollision::update(float deltaTime, Spring& spring){
 	if(spring.startPoint.position.y >= groundLevel){
 		spring.startPoint.position.y = groundLevel;
 		spring.startPoint.lastPosition = spring.startPoint.position;
+		spring.startPoint.newPosition = spring.startPoint.position;
 	}
 	
 	if(spring.endPoint.position.y >= groundLevel){
 		spring.endPoint.position.y = groundLevel;
 		spring.endPoint.lastPosition = spring.endPoint.position;
+		spring.endPoint.newPosition = spring.endPoint.position;
 	}
 	
 }
