@@ -12,13 +12,15 @@ class Scene{
 		ofEasyCam mainCamera;
 		ofVec3f dimensions;
 
-		std::vector<std::shared_ptr<SpringSystem>> springSystems;
-
+		std::shared_ptr<SpringSystem> springSystem;
+		
 	public:
 		Scene(ofVec3f dimensions);
 		
 		virtual void load();
 		virtual void draw();
+
+		virtual void handleClick(int x, int y, int button);
 };
 //------
 
@@ -27,7 +29,7 @@ class ClosestNeighbourScene: public Scene{
 public:
 	ClosestNeighbourScene(ofVec3f dimensions);
 
-	void load();
+	void load() override;
 };
 //------
 
@@ -36,6 +38,7 @@ class TriangulationScene: public Scene{
 public:
 	TriangulationScene(ofVec3f dimensions);
 
-	void load();
+	void load() override;
+	void handleClick(int x, int y, int button) override;
 };
 //------

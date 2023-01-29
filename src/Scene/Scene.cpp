@@ -11,12 +11,12 @@ void Scene::load(){}
 void Scene::draw(){
 	mainCamera.begin();
 
-	for(std::shared_ptr<SpringSystem> system: springSystems){
-		system -> updateAndDraw();
-	}
+	springSystem -> updateAndDraw();
 
 	mainCamera.end();
 }
+
+void Scene::handleClick(int x, int y, int button){}
 //------
 
 //---Closest Neighbour Scene---
@@ -34,9 +34,7 @@ ClosestNeighbourScene::ClosestNeighbourScene(ofVec3f dimensions)
 	boxGenerator.generate(particlesVector, 5000);
 	//------
 
-	springSystems = {
-		std::make_shared<ClosestNeighbourSystem>(particlesVector)
-	};
+	springSystem = std::make_shared<ClosestNeighbourSystem>(particlesVector);
 }
 
 void ClosestNeighbourScene::load(){
@@ -57,14 +55,22 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 
 	particlesVector[0].staticPosition = true;
 
-	springSystems = {
-		std::make_shared<TriangulationSystem>(particlesVector)
-	};
+	springSystem = std::make_shared<TriangulationSystem>(particlesVector);
 }
 
 void TriangulationScene::load(){
 	mainCamera.setTarget(dimensions / 2);
 	mainCamera.panDeg(270);
 	mainCamera.rollDeg(225);
+
+	mainCamera.removeAllInteractions();
+}
+
+void TriangulationScene::handleClick(int x, int y, int button){
+	if(button == OF_MOUSE_BUTTON_LEFT){
+		Particle newParticle({x, y});
+		springSystem->addParticle(newParticle);
+	}
+
 }
 //------

@@ -16,7 +16,6 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofNoFill();
 	scene.draw();
 }
 
@@ -41,7 +40,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	// int a = 0;
+	scene.handleClick(x, y, button);
 }
 
 //--------------------------------------------------------------

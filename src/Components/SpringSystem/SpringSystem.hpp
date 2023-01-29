@@ -19,6 +19,7 @@ class SpringSystem{
 	public:
 		SpringSystem(std::vector<Particle> particlesVector);
 
+		virtual void addParticle(Particle particle);
 		void updateAndDraw();
 };
 //------
@@ -71,5 +72,7 @@ private:
 
 public:
 	TriangulationSystem(std::vector<Particle> particlesVector);
+
+	void addParticle(Particle particle) override;
 };
 //------

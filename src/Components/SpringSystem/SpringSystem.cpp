@@ -6,6 +6,8 @@ SpringSystem::SpringSystem(std::vector<Particle> particlesVector)
 : particlesVector(particlesVector)
 {}
 
+void SpringSystem::addParticle(Particle particle){}
+
 void SpringSystem::updateAndDraw(){
 	float deltaTime = ofGetLastFrameTime();
 	
@@ -305,6 +307,8 @@ void TriangulationSystem::triangulate(){
 	}
 	//------
 
+	springsVector.clear();
+
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
 		springsVector.emplace_back(100, length, *edge.pointA, *edge.pointB);
@@ -323,6 +327,11 @@ void TriangulationSystem::setUpdaters(){
 	};
 }
 
+void TriangulationSystem::addParticle(Particle particle){
+	particlesVector.push_back(particle);
+	//costly
+	triangulate();
+}
 
 TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)
 : SpringSystem(_particlesVector)
