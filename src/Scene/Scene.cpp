@@ -49,11 +49,6 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 : Scene(dimensions)
 {
 	std::vector<Particle> particlesVector = {
-		//TODO check why triangulation not working
-		// Particle({3 * dimensions.x / 8, dimensions.y / 4}),
-		// Particle({dimensions.x / 2, dimensions.y / 5}),
-		// Particle({6 * dimensions.x / 8, dimensions.y / 4})
-
 		Particle({dimensions.x / 2, dimensions.y / 20}),
 		Particle({dimensions.x / 2.3, dimensions.y / 8}),
 		Particle({dimensions.x - dimensions.x / 2.3, dimensions.y / 8})

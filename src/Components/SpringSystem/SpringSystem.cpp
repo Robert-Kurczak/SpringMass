@@ -189,7 +189,7 @@ void TriangulationSystem::triangulate(){
 		else if(particle.position.y > maxY) maxY = particle.position.y;
 	}
 
-	float margin = std::max(maxX - minX, maxY - minY);
+	float margin = 10 * std::max(maxX - minX, maxY - minY);
 
 	Particle stParticleA(ofVec2f(minX - margin, minY - margin));
 	Particle stParticleB(ofVec2f(maxX + margin, minY - margin));
