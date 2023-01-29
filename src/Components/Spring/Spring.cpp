@@ -25,8 +25,7 @@ float Spring::getCurrentLength(){
 std::pair<ofVec3f, ofVec3f> Spring::getForce(){
 	std::pair<ofVec3f, ofVec3f> result;
 
-	//pointing from startPoint to endPoint
-	ofVec3f displacement = endPoint.position - startPoint.position;
+	ofVec3f displacement = startPoint.position - endPoint.position ;
 
 	float deltaX = getCurrentLength() - restLength;
 	ofVec3f versor = displacement.getNormalized();
