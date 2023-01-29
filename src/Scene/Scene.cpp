@@ -54,14 +54,16 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 		ofVec3f(dimensions.x, dimensions.y, 0)
 	);
 
-	boxGenerator.generate(particlesVector, 500);
+	// boxGenerator.generate(particlesVector, 500);
 	
-	// particlesVector = {
-	// 	Particle({0, 0}),
-	// 	Particle({100, -200}),
-	// 	Particle({200, 0})
-	// };
+	particlesVector = {
+		Particle({0, 0}),
+		Particle({100, -200}),
+		Particle({200, 0})
+	};
 	//------
+
+	particlesVector[1].staticPosition = true;
 
 	springSystems = {
 		std::make_shared<TriangulationSystem>(particlesVector)
@@ -70,7 +72,7 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 
 void TriangulationScene::load(){
 	mainCamera.setTarget(dimensions / 2);
-	mainCamera.panDeg(90);
-	mainCamera.rollDeg(135);
+	mainCamera.panDeg(270);
+	mainCamera.rollDeg(225);
 }
 //------

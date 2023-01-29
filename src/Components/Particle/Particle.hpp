@@ -4,6 +4,8 @@
 
 class Particle{
 	public:
+		bool staticPosition = false;
+
 		bool updated = false;
 
 		float radius = 5;
