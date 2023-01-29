@@ -2,53 +2,35 @@
 #include <cmath>
 
 //---Base---
-SpringSystem::SpringSystem(std::vector<Particle> particlesVector):
-particlesVector(particlesVector)
+SpringSystem::SpringSystem(std::vector<Particle> particlesVector)
+: particlesVector(particlesVector)
 {}
-
-void SpringSystem::updateParticle(float deltaTime, Particle& particle, ofVec3f force){
-	//Initial position, Euler method
-	if(particle.position == particle.lastPosition){
-		particle.newPosition = particle.position + force / particle.mass * deltaTime * deltaTime;
-	}
-	//Verlet method
-	else{
-		ofVec3f newPosition = (
-			2 * particle.position - particle.lastPosition +
-			deltaTime * deltaTime * force / particle.mass
-		);
-
-		particle.newPosition = newPosition;
-	}
-}
 
 void SpringSystem::updateAndDraw(){
 	float deltaTime = ofGetLastFrameTime();
+	
 	//Updating
 	for(auto& spring: springsVector){
 		std::pair<ofVec3f, ofVec3f> springForce = spring.getForce();
 
-		if(!spring.startPoint.staticPosition){
-			ofVec3f resultForce = springForce.first;
+		Particle& startPoint = spring.startPoint;
+		Particle& endPoint = spring.endPoint;
 
-			for(auto& generator: forceGeneratorsVector){
-				resultForce += generator->getForce(spring.startPoint);
-			}
+		startPoint.force += springForce.first;
+		endPoint.force += springForce.second;
+		
+		if(!startPoint.updated){
+			for(auto& generator: forceGeneratorsVector)
+				startPoint.force += generator->getForce(startPoint);
 
-			updateParticle(deltaTime, spring.startPoint, resultForce);
-			spring.startPoint.updated = true;
+			startPoint.updated = true;
 		}
 
-		if(!spring.endPoint.staticPosition){
-			ofVec3f resultForce = springForce.second;
+		if(!endPoint.updated){
+			for(auto& generator: forceGeneratorsVector)
+				endPoint.force += generator->getForce(endPoint);
 
-			for(auto& generator: forceGeneratorsVector){
-				resultForce += generator->getForce(spring.endPoint);
-			}
-
-			updateParticle(deltaTime, spring.endPoint, resultForce);
-			spring.endPoint.updated = true;
-
+			endPoint.updated = true;
 		}
 
 		for(auto& updater: updatersVector){
@@ -56,14 +38,26 @@ void SpringSystem::updateAndDraw(){
 		}
 	}
 
-	//Preparing particles for next iteration of updates
 	for(auto& particle: particlesVector){
 		if(!particle.staticPosition){
-			particle.lastPosition = particle.position;
-			particle.position = particle.newPosition;
+			//Initial position, Euler method
+			if(particle.position == particle.lastPosition){
+				particle.position += particle.force / particle.mass * deltaTime * deltaTime;
+			}
+			//Verlet method
+			else{
+				ofVec3f newPosition = (
+					2 * particle.position - particle.lastPosition +
+					deltaTime * deltaTime * particle.force / particle.mass
+				);
 
-			particle.updated = false;
+				particle.lastPosition = particle.position;
+				particle.position = newPosition;
+			}
 		}
+
+		particle.updated = false;
+		particle.force = ofVec3f(0, 0, 0);
 	}
 
 	//Drawing
@@ -313,7 +307,7 @@ void TriangulationSystem::triangulate(){
 
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
-		springsVector.emplace_back(10, length, *edge.pointA, *edge.pointB);
+		springsVector.emplace_back(100, length, *edge.pointA, *edge.pointB);
 	}
 }
 
@@ -325,7 +319,7 @@ void TriangulationSystem::setForceGenerators(){
 
 void TriangulationSystem::setUpdaters(){
 	updatersVector = {
-		// std::make_shared<GroundCollision>(300)
+		std::make_shared<GroundCollision>(1000)
 	};
 }
 

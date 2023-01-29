@@ -16,6 +16,8 @@ class Particle{
 		ofVec3f position;
 		ofVec3f newPosition;
 
+		ofVec3f force;
+
 		Particle(ofVec3f position);
 
 		void draw();
