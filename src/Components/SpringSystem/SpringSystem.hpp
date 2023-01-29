@@ -4,7 +4,7 @@
 
 #include "../Particle/Particle.hpp"
 #include "../Spring/Spring.hpp"
-#include "../ParticleUpdater/ParticleUpdater.hpp"
+#include "../ForceGenerator/ForceGenerator.hpp"
 #include "../SpringUpdater/SpringUpdater.hpp"
 
 //---Base---
@@ -13,9 +13,9 @@ class SpringSystem{
 		std::vector<Particle> particlesVector;
 		std::vector<Spring> springsVector;
 
-		std::vector<std::shared_ptr<ParticleUpdater>> particleUpdatersVector;
-		std::vector<std::shared_ptr<SpringUpdater>> springUpdatersVector;
-	
+		std::vector<std::shared_ptr<ForceGenerator>> forceGeneratorsVector;
+		std::vector<std::shared_ptr<SpringUpdater>> updatersVector;
+
 	public:
 		SpringSystem(std::vector<Particle> particlesVector);
 
@@ -65,8 +65,9 @@ private:
 	};
 
 	void triangulate();
-	void setParticleUpdaters();
-	void setSpringUpdaters();
+
+	void setForceGenerators();
+	void setUpdaters();
 
 public:
 	TriangulationSystem(std::vector<Particle> particlesVector);

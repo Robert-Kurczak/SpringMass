@@ -1,13 +1,16 @@
 #include "../Spring/Spring.hpp"
 
-//---Base---
 class SpringUpdater{
 	public:
 		virtual void update(float deltaTime, Spring& spring) = 0;
 };
-//------
 
-class SpringForce: public SpringUpdater{
+class GroundCollision: public SpringUpdater{
+	private:
+		float groundLevel;
+
 	public:
-		void update(float deltaTime, Spring& spring);
+		GroundCollision(float groundLevel);
+
+		void update(float deltaTime, Spring& spring) override;
 };

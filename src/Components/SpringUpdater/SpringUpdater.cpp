@@ -1,28 +1,18 @@
 #include "SpringUpdater.hpp"
 
-void SpringForce::update(float deltaTime, Spring& spring){
-	//TODO refractor calculating force fector
-	float deltaX = spring.getCurrentLength() - spring.restLength;
-	float forceScalar = -spring.constant * deltaX;
-	ofVec3f versor = (spring.endPoint.position - spring.endPoint.position).normalize();
+//---Ground Collision---
+GroundCollision::GroundCollision(float groundLevel)
+: groundLevel(groundLevel)
+{}
 
-	ofVec3f force = versor * forceScalar;
-
-	//---Verlet---
-	ofVec3f newStartPosition = (
-		2 * spring.startPoint.position - spring.startPoint.lastPosition +
-		deltaTime * deltaTime * -force / spring.startPoint.mass
-	);
-
-	spring.startPoint.lastPosition = spring.startPoint.position;
-	spring.startPoint.position = newStartPosition;
-
-	ofVec3f newEndPosition = (
-		2 * spring.endPoint.position - spring.endPoint.lastPosition +
-		deltaTime * deltaTime * force / spring.endPoint.mass
-	);
-
-	spring.endPoint.lastPosition = spring.endPoint.position;
-	spring.endPoint.position = newEndPosition;
-	//------
+void GroundCollision::update(float deltaTime, Spring& spring){
+	if(spring.startPoint.position.y > groundLevel){
+		spring.startPoint.position.y = groundLevel;
+	}
+	
+	if(spring.endPoint.position.y > groundLevel){
+		spring.endPoint.position.y = groundLevel;
+	}
+	
 }
+//------

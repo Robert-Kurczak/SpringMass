@@ -21,3 +21,19 @@ void Spring::draw(){
 float Spring::getCurrentLength(){
 	return startPoint.position.distance(endPoint.position);
 }
+
+std::pair<ofVec3f, ofVec3f> Spring::getForce(){
+	std::pair<ofVec3f, ofVec3f> result;
+
+	ofVec3f displacement = startPoint.position - endPoint.position ;
+
+	float deltaX = getCurrentLength() - restLength;
+	ofVec3f versor = displacement.getNormalized();
+
+	result.first = -constant * deltaX * versor;
+
+	//for simplicity for now
+	result.second = -result.first;
+
+	return result;
+}
