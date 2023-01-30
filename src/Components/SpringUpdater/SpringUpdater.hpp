@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Spring/Spring.hpp"
 
 class SpringUpdater{

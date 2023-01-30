@@ -69,7 +69,6 @@ void SpringSystem::updateAndDraw(){
 
 	//Drawing
 
-	//TODO move particle draw to spring
 	for(auto& spring: springsVector) spring.draw();
 	for(auto& particle: particlesVector) particle.draw();
 }
