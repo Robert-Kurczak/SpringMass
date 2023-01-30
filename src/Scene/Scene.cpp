@@ -47,9 +47,9 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 : Scene(dimensions)
 {
 	std::vector<Particle> particlesVector = {
-		Particle({dimensions.x / 2, dimensions.y / 20}),
-		Particle({dimensions.x / 2.3, dimensions.y / 8}),
-		Particle({dimensions.x - dimensions.x / 2.3, dimensions.y / 8})
+		Particle({dimensions.x / 2.f, dimensions.y / 20.f}),
+		Particle({dimensions.x / 2.3f, dimensions.y / 8.f}),
+		Particle({dimensions.x - dimensions.x / 2.3f, dimensions.y / 8.f})
 	};
 	//------
 
@@ -59,17 +59,32 @@ TriangulationScene::TriangulationScene(ofVec3f dimensions)
 }
 
 void TriangulationScene::load(){
+	mainCamera.enableOrtho();
+
 	mainCamera.setTarget(dimensions / 2);
-	mainCamera.panDeg(270);
-	mainCamera.rollDeg(225);
+
+	mainCamera.setPosition(dimensions.x / 2, dimensions.y / 2, 1);
+	mainCamera.lookAt(ofVec3f(dimensions / 2), ofVec3f(0, 1, 0));
+	mainCamera.setVFlip(true);
+
+	mainCamera.setNearClip(-1000);
 
 	mainCamera.removeAllInteractions();
 }
 
 void TriangulationScene::handleClick(int x, int y, int button){
+	ofVec2f worldCoords = mainCamera.screenToWorld(ofVec3f(x, y, 0));
+	
 	if(button == OF_MOUSE_BUTTON_LEFT){
-		Particle newParticle({x, y});
+
+		Particle newParticle(worldCoords);
 		springSystem->addParticle(newParticle);
+	}
+	else if(button == OF_MOUSE_BUTTON_RIGHT){
+		springSystem->removeClosestParticle(worldCoords);
+	}
+	else if(button == OF_MOUSE_BUTTON_MIDDLE){
+		springSystem->disableStatic();
 	}
 
 }

@@ -20,6 +20,9 @@ class SpringSystem{
 		SpringSystem(std::vector<Particle> particlesVector);
 
 		virtual void addParticle(Particle particle);
+		virtual void disableStatic();
+		virtual void removeClosestParticle(ofVec3f position);
+
 		void updateAndDraw();
 };
 //------
@@ -74,5 +77,6 @@ public:
 	TriangulationSystem(std::vector<Particle> particlesVector);
 
 	void addParticle(Particle particle) override;
+	void removeClosestParticle(ofVec3f position) override;
 };
 //------

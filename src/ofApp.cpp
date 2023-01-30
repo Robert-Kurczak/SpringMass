@@ -2,7 +2,7 @@
 
 #include "Scene/Scene.hpp"
 
-TriangulationScene scene({1000, 1000, 0});
+TriangulationScene scene({1600, 960, 0});
 
 //--------------------------------------------------------------
 void ofApp::setup(){

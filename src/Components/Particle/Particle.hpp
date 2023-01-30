@@ -9,12 +9,11 @@ class Particle{
 		bool updated = false;
 
 		float radius = 5;
-		float mass = 1;
+		float mass = 10;
 		ofColor color;
 		
 		ofVec3f lastPosition;
 		ofVec3f position;
-		ofVec3f newPosition;
 
 		ofVec3f force;
 

@@ -1,7 +1,7 @@
 #include "Particle.hpp"
 
 Particle::Particle(ofVec3f position)
-: lastPosition(position), position(position), newPosition(position)
+: lastPosition(position), position(position)
 {}
 
 void Particle::draw(){

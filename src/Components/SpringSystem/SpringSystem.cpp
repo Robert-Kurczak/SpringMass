@@ -7,6 +7,11 @@ SpringSystem::SpringSystem(std::vector<Particle> particlesVector)
 {}
 
 void SpringSystem::addParticle(Particle particle){}
+void SpringSystem::disableStatic(){
+	for(auto& particle: particlesVector)
+		particle.staticPosition = false;
+}
+void SpringSystem::removeClosestParticle(ofVec3f position){}
 
 void SpringSystem::updateAndDraw(){
 	float deltaTime = ofGetLastFrameTime();
@@ -312,6 +317,17 @@ void TriangulationSystem::triangulate(){
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
 		springsVector.emplace_back(100, length, *edge.pointA, *edge.pointB);
+
+		//Setting static color
+		float x = springsVector.size() % 600;
+		float normalizedX = ofMap(x, 0, 600, 0, 1);
+		ofColor color;
+		color.setHsb(normalizedX * 255, 255, 255);
+
+		springsVector.back().color = color;
+
+		springsVector.back().startPoint.color = color * 2;
+		springsVector.back().endPoint.color = color * 1.5;
 	}
 }
 
@@ -323,13 +339,36 @@ void TriangulationSystem::setForceGenerators(){
 
 void TriangulationSystem::setUpdaters(){
 	updatersVector = {
-		std::make_shared<GroundCollision>(1000)
+		std::make_shared<GroundCollision>(960)
 	};
 }
 
 void TriangulationSystem::addParticle(Particle particle){
 	particlesVector.push_back(particle);
 	//costly
+	triangulate();
+}
+
+void TriangulationSystem::removeClosestParticle(ofVec3f position){
+	if(particlesVector.size() <= 3) return;
+
+	int closestParticleID = -1;
+	float closestDistanceSqr = FLT_MAX;
+
+	for(size_t i = 0; i < particlesVector.size(); i++){
+		const Particle& particle = particlesVector[i];
+
+		float distanceSqr = particle.position.squareDistance(position);
+
+		if(closestDistanceSqr > distanceSqr){
+			closestParticleID = i;
+			closestDistanceSqr = distanceSqr;
+		}
+	}
+
+	if(closestDistanceSqr >= 1000) return;
+
+	particlesVector.erase(particlesVector.begin() + closestParticleID);
 	triangulate();
 }
 
