@@ -30,22 +30,22 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+	scene.mouseMoved(x, y);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	scene.handleClick(x, y, button);
+	scene.mouseDown(x, y, button);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+	scene.mouseUp(x, y, button);
 }
 
 //--------------------------------------------------------------

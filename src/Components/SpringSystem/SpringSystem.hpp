@@ -16,12 +16,19 @@ class SpringSystem{
 		std::vector<std::shared_ptr<ForceGenerator>> forceGeneratorsVector;
 		std::vector<std::shared_ptr<SpringUpdater>> updatersVector;
 
+		Particle* pickedUpParticle = nullptr;
+
+		int closestParticleID(ofVec3f position, float maxDistance);
+
 	public:
 		SpringSystem(std::vector<Particle> particlesVector);
 
 		virtual void addParticle(Particle particle);
 		virtual void disableStatic();
 		virtual void removeClosestParticle(ofVec3f position);
+		virtual void pickUpClosestParticle(ofVec3f position);
+		virtual void updatePickedParticle(ofVec3f position);
+		virtual void releasePickedParticle();
 
 		void updateAndDraw();
 };
@@ -78,5 +85,8 @@ public:
 
 	void addParticle(Particle particle) override;
 	void removeClosestParticle(ofVec3f position) override;
+	void pickUpClosestParticle(ofVec3f position) override;
+	void updatePickedParticle(ofVec3f position) override;
+	void releasePickedParticle() override;
 };
 //------

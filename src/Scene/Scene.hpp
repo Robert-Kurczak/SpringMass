@@ -20,7 +20,9 @@ class Scene{
 		virtual void load();
 		virtual void draw();
 
-		virtual void handleClick(int x, int y, int button);
+		virtual void mouseDown(int x, int y, int button);
+		virtual void mouseUp(int x, int y, int button);
+		virtual void mouseMoved(int x, int y);
 };
 //------
 
@@ -39,6 +41,9 @@ public:
 	TriangulationScene(ofVec3f dimensions);
 
 	void load() override;
-	void handleClick(int x, int y, int button) override;
+
+	void mouseDown(int x, int y, int button) override;
+	void mouseUp(int x, int y, int button) override;
+	void mouseMoved(int x, int y) override;
 };
 //------

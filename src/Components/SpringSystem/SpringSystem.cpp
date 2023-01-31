@@ -6,12 +6,34 @@ SpringSystem::SpringSystem(std::vector<Particle> particlesVector)
 : particlesVector(particlesVector)
 {}
 
+int SpringSystem::closestParticleID(ofVec3f position, float maxDistanceSqr){
+	int closestParticleID = -1;
+	float closestDistanceSqr = FLT_MAX;
+
+	for(size_t i = 0; i < particlesVector.size(); i++){
+		const Particle& particle = particlesVector[i];
+
+		float distanceSqr = particle.position.squareDistance(position);
+
+		if(distanceSqr < maxDistanceSqr && closestDistanceSqr > distanceSqr){
+			closestParticleID = i;
+			closestDistanceSqr = distanceSqr;
+		}
+	}
+
+	return closestParticleID;
+}
+
 void SpringSystem::addParticle(Particle particle){}
 void SpringSystem::disableStatic(){
 	for(auto& particle: particlesVector)
 		particle.staticPosition = false;
 }
+
 void SpringSystem::removeClosestParticle(ofVec3f position){}
+void SpringSystem::pickUpClosestParticle(ofVec3f position){}
+void SpringSystem::updatePickedParticle(ofVec3f position){}
+void SpringSystem::releasePickedParticle(){}
 
 void SpringSystem::updateAndDraw(){
 	float deltaTime = ofGetLastFrameTime();
@@ -72,6 +94,7 @@ void SpringSystem::updateAndDraw(){
 	for(auto& spring: springsVector) spring.draw();
 	for(auto& particle: particlesVector) particle.draw();
 }
+
 //------
 
 //---Closest Neighbour System---
@@ -315,11 +338,11 @@ void TriangulationSystem::triangulate(){
 
 	for(auto& edge: uniqueEdges){
 		float length = edge.pointA->position.distance(edge.pointB->position);
-		springsVector.emplace_back(100, length, *edge.pointA, *edge.pointB);
+		springsVector.emplace_back(1000, length, *edge.pointA, *edge.pointB);
 
 		//Setting static color
-		float x = springsVector.size() % 600;
-		float normalizedX = ofMap(x, 0, 600, 0, 1);
+		float x = springsVector.size() % 300;
+		float normalizedX = ofMap(x, 0, 300, 0, 1);
 		ofColor color;
 		color.setHsb(normalizedX * 255, 255, 255);
 
@@ -342,6 +365,7 @@ void TriangulationSystem::setUpdaters(){
 	};
 }
 
+
 void TriangulationSystem::addParticle(Particle particle){
 	particlesVector.push_back(particle);
 	//costly
@@ -349,26 +373,29 @@ void TriangulationSystem::addParticle(Particle particle){
 }
 
 void TriangulationSystem::removeClosestParticle(ofVec3f position){
-	if(particlesVector.size() <= 3) return;
+	int particleID = closestParticleID(position, 1000);
 
-	int closestParticleID = -1;
-	float closestDistanceSqr = FLT_MAX;
+	if(particleID == -1) return;
 
-	for(size_t i = 0; i < particlesVector.size(); i++){
-		const Particle& particle = particlesVector[i];
-
-		float distanceSqr = particle.position.squareDistance(position);
-
-		if(closestDistanceSqr > distanceSqr){
-			closestParticleID = i;
-			closestDistanceSqr = distanceSqr;
-		}
-	}
-
-	if(closestDistanceSqr >= 1000) return;
-
-	particlesVector.erase(particlesVector.begin() + closestParticleID);
+	particlesVector.erase(particlesVector.begin() + particleID);
 	triangulate();
+}
+
+void TriangulationSystem::pickUpClosestParticle(ofVec3f position){
+	int particleID = closestParticleID(position, 1000);
+
+	if(particleID == -1) return;
+
+	pickedUpParticle = &particlesVector[particleID];
+}
+
+void TriangulationSystem::updatePickedParticle(ofVec3f position){
+	if(pickedUpParticle != nullptr)
+		pickedUpParticle->position = position;
+}
+
+void TriangulationSystem::releasePickedParticle(){
+	pickedUpParticle = nullptr;
 }
 
 TriangulationSystem::TriangulationSystem(std::vector<Particle> _particlesVector)

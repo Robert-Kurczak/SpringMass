@@ -16,7 +16,9 @@ void Scene::draw(){
 	mainCamera.end();
 }
 
-void Scene::handleClick(int x, int y, int button){}
+void Scene::mouseDown(int x, int y, int button){}
+void Scene::mouseUp(int x, int y, int button){}
+void Scene::mouseMoved(int x, int y){}
 //------
 
 //---Closest Neighbour Scene---
@@ -72,20 +74,29 @@ void TriangulationScene::load(){
 	mainCamera.removeAllInteractions();
 }
 
-void TriangulationScene::handleClick(int x, int y, int button){
+void TriangulationScene::mouseDown(int x, int y, int button){
 	ofVec2f worldCoords = mainCamera.screenToWorld(ofVec3f(x, y, 0));
 	
 	if(button == OF_MOUSE_BUTTON_LEFT){
-
+		springSystem->pickUpClosestParticle(worldCoords);
+	}
+	else if(button == OF_MOUSE_BUTTON_RIGHT){
 		Particle newParticle(worldCoords);
 		springSystem->addParticle(newParticle);
 	}
-	else if(button == OF_MOUSE_BUTTON_RIGHT){
+	else if(button == OF_MOUSE_BUTTON_MIDDLE){
 		springSystem->removeClosestParticle(worldCoords);
 	}
-	else if(button == OF_MOUSE_BUTTON_MIDDLE){
-		springSystem->disableStatic();
-	}
 
+}
+
+void TriangulationScene::mouseUp(int x, int y, int buttin){
+	springSystem->releasePickedParticle();
+}
+
+void TriangulationScene::mouseMoved(int x, int y){
+	ofVec2f worldCoords = mainCamera.screenToWorld(ofVec3f(x, y, 0));
+
+	springSystem->updatePickedParticle(worldCoords);
 }
 //------
